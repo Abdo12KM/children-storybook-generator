@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if Google API key is available
-    const apiKey = process.env.GOOGLE_API_KEY;
+    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) {
       console.log("Google API key not found, using enhanced placeholder");
       const fallbackImageUrl = `/placeholder.svg?height=400&width=600&query=${encodeURIComponent(enhancedPrompt)}`;
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         prompt: body.prompt,
         fallback: true,
         message:
-          "Add GOOGLE_API_KEY to Project Settings for AI-generated images",
+          "Add GOOGLE_GENERATIVE_AI_API_KEY to Project Settings for AI-generated images",
       });
     }
 
