@@ -148,9 +148,9 @@ export function StoryPreview({ story, childName }: StoryPreviewProps) {
                 </div>
               )}
 
-              <p className="text-muted-foreground text-sm italic">
+              {/* <p className="text-muted-foreground text-sm italic">
                 {page.imagePrompt}
-              </p>
+              </p> */}
             </div>
           </div>
         </div>

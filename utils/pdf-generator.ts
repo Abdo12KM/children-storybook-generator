@@ -153,13 +153,13 @@ export const generateStoryPDF = async (
     currentY += 10;
     pdf.setFontSize(9);
     pdf.setTextColor(120, 120, 120);
-    addWrappedText(
+    /*  addWrappedText(
       `Illustration: ${page.imagePrompt}`,
       margin,
       currentY,
       contentWidth,
       9,
-    );
+    ); */
     pdf.setTextColor(0, 0, 0);
   }
 

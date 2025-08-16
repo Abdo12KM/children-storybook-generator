@@ -2,6 +2,7 @@
 
 import { StoryPreview } from "@/components/StoryPreview";
 import { StoryProgress } from "@/components/StoryProgress";
+import LoadingOverlay from "@/components/LoadingOverlay";
 import {
   ChildDetailsStep,
   MainCharacterStep,
@@ -22,9 +23,16 @@ export default function StoryCreator() {
     error,
     updateStoryData,
     generateStory,
+    resetStory,
   } = useStoryGenerator();
 
-  const { currentStep, nextStep, prevStep, progress } = useStepNavigation();
+  const { currentStep, nextStep, prevStep, progress, resetSteps } =
+    useStepNavigation();
+
+  const handleCreateNewStory = () => {
+    resetStory();
+    resetSteps();
+  };
 
   if (generatedStory) {
     return (
@@ -37,6 +45,7 @@ export default function StoryCreator() {
               variant="bordered"
               startContent={<ArrowLeft className="h-4 w-4" />}
               className="self-start bg-transparent"
+              onPress={handleCreateNewStory}
             >
               Create New Story
             </Button>
@@ -123,6 +132,12 @@ export default function StoryCreator() {
 
   return (
     <div className="from-background via-card to-muted min-h-screen bg-gradient-to-br p-4">
+      {/* Loading Overlay */}
+      <LoadingOverlay
+        isVisible={isGenerating}
+        childName={storyData.childName}
+      />
+
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <div className="mb-6 text-center">

@@ -1,4 +1,4 @@
-# Children's Storybook Generator 📚✨
+# StorySprout 📚✨
 
 An AI-powered web application that creates personalized children's storybooks with custom illustrations. Built with Next.js 15, React 19, and Google's Gemini AI.
 
@@ -102,30 +102,6 @@ An AI-powered web application that creates personalized children's storybooks wi
 - **PostCSS**: CSS processing
 - **Tailwind CSS v4**: Latest styling framework
 
-## 📁 Project Structure
-
-```
-├── app/                    # Next.js 15 App Router
-│   ├── api/               # API routes
-│   │   ├── generate-story/ # Story generation endpoint
-│   │   └── generate-image/ # Image generation endpoint
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx          # Main story creator page
-│   └── providers.tsx     # App providers
-├── components/            # React components
-│   ├── steps/            # Story creation steps
-│   ├── ui/               # Reusable UI components
-│   ├── StoryPreview.tsx  # Story display component
-│   └── StoryProgress.tsx # Progress indicator
-├── constants/            # App constants and configurations
-├── hooks/               # Custom React hooks
-├── lib/                 # Utility libraries
-├── services/            # API service layer
-├── types/               # TypeScript type definitions
-└── utils/               # Helper utilities
-```
-
 ## 🎨 Story Creation Process
 
 ### Step 1: Child Details
@@ -177,44 +153,6 @@ Configure story generation in `constants/story.ts`:
 - Vocabulary levels
 - Age group settings
 - Theme options
-
-## 🌐 API Endpoints
-
-### POST `/api/generate-story`
-
-Generates a complete story with pages, vocabulary, and discussion questions.
-
-**Request Body:**
-
-```typescript
-{
-  childName: string;
-  childAge: string;
-  mainCharacter: string;
-  characterDescription: string;
-  setting: string;
-  theme: string;
-  moralLesson: string;
-  storyLength: string;
-  artStyle: string;
-  personalityTraits: string[];
-  difficulty: string;
-}
-```
-
-### POST `/api/generate-image`
-
-Generates custom illustrations for story pages.
-
-**Request Body:**
-
-```typescript
-{
-  prompt: string;
-  style?: string;
-  characterSheet?: string;
-}
-```
 
 ## 🎯 Features in Detail
 

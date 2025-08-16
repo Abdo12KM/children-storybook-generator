@@ -22,6 +22,10 @@ export function useStepNavigation() {
     }
   }, []);
 
+  const resetSteps = useCallback(() => {
+    setCurrentStep(1);
+  }, []);
+
   const progress = (currentStep / STEPS.length) * 100;
 
   return {
@@ -29,6 +33,7 @@ export function useStepNavigation() {
     nextStep,
     prevStep,
     goToStep,
+    resetSteps,
     progress,
     isFirstStep: currentStep === 1,
     isLastStep: currentStep === STEPS.length,
