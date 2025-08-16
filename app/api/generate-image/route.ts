@@ -13,6 +13,8 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("Generating image with Gemini for prompt:", body.prompt);
+    console.log("Page number:", body.pageNumber || "N/A");
+    console.log("Has reference image:", !!body.referenceImage);
 
     // Enhanced prompt for children's book style with character consistency
     let enhancedPrompt = `Create a children's book illustration: ${body.prompt}. Style: colorful, friendly, safe for kids, cartoon-like, whimsical, high quality digital art`;
@@ -27,27 +29,49 @@ export async function POST(request: NextRequest) {
       enhancedPrompt += `. Art style: ${body.style}`;
     }
 
+    // Add consistency instruction if this is not the first image
+    if (body.referenceImage && body.pageNumber && body.pageNumber > 1) {
+      enhancedPrompt += ". IMPORTANT: Keep the character design, art style, and visual consistency exactly the same as in the reference image. Maintain the same character appearance, color palette, and artistic style.";
+    }
+
     // Check if Google API key is available
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) {
-      console.log("Google API key not found, using enhanced placeholder");
-      const fallbackImageUrl = `/placeholder.svg?height=400&width=600&query=${encodeURIComponent(enhancedPrompt)}`;
-      return NextResponse.json({
-        imageUrl: fallbackImageUrl,
-        prompt: body.prompt,
-        fallback: true,
-        message:
-          "Add GOOGLE_GENERATIVE_AI_API_KEY to Project Settings for AI-generated images",
-      });
+      console.error("Google API key not found");
+      return NextResponse.json(
+        { error: "Google Generative AI API key is required. Please add GOOGLE_GENERATIVE_AI_API_KEY to your environment variables." },
+        { status: 500 }
+      );
     }
 
     // Use Gemini for image generation
     const { GoogleGenAI, Modality } = await import("@google/genai");
     const ai = new GoogleGenAI({ apiKey });
 
+    // Prepare content based on whether we have a reference image
+    let contents;
+    
+    if (body.referenceImage && body.pageNumber && body.pageNumber > 1) {
+      // Use image-to-image generation for consistency
+      console.log("Using reference image for consistency");
+      contents = [
+        { text: enhancedPrompt },
+        {
+          inlineData: {
+            mimeType: "image/png", // Assume PNG, but this should ideally be dynamic
+            data: body.referenceImage.replace(/^data:image\/[^;]+;base64,/, ""), // Remove data URL prefix if present
+          },
+        },
+      ];
+    } else {
+      // Use text-to-image for the first image
+      console.log("Generating first image (text-to-image)");
+      contents = enhancedPrompt;
+    }
+
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash-preview-image-generation",
-      contents: enhancedPrompt,
+      contents: contents,
       config: {
         responseModalities: [Modality.TEXT, Modality.IMAGE],
       },
@@ -86,17 +110,12 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Gemini image generation error:", error);
 
-    const body: ImageRequest = await request.json(); // Declare body variable here
-    const enhancedPrompt = `${body.prompt}, children's book illustration, colorful, friendly, cartoon style`;
-    const imageUrl = `/placeholder.svg?height=400&width=600&query=${encodeURIComponent(enhancedPrompt)}`;
-
-    console.log("Using placeholder image as fallback");
-
-    return NextResponse.json({
-      imageUrl,
-      prompt: body.prompt,
-      fallback: true,
-      error: error instanceof Error ? error.message : "Image generation failed",
-    });
+    return NextResponse.json(
+      {
+        error: "Image generation failed",
+        details: error instanceof Error ? error.message : "Unknown error occurred",
+      },
+      { status: 500 }
+    );
   }
 }

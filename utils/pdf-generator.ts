@@ -7,8 +7,9 @@ const getImageBase64 = async (imageUrl: string): Promise<string | null> => {
       return imageUrl;
     }
 
-    if (imageUrl.includes("placeholder.svg")) {
-      return null; // Skip placeholder images
+    // Skip if no valid image URL
+    if (!imageUrl || imageUrl.includes("placeholder")) {
+      return null;
     }
 
     const response = await fetch(imageUrl);
@@ -77,19 +78,27 @@ export const generateStoryPDF = async (
       } else {
         // Create placeholder rectangle
         pdf.setFillColor(240, 240, 240);
+        // No image available - show placeholder text
+        pdf.setFillColor(240, 240, 240);
         pdf.rect(x, y, width, height, "F");
         pdf.setTextColor(100, 100, 100);
         pdf.setFontSize(10);
-        pdf.text("Image placeholder", x + width / 2, y + height / 2, {
+        pdf.text("Image not available", x + width / 2, y + height / 2, {
           align: "center",
         });
         pdf.setTextColor(0, 0, 0);
       }
     } catch (error) {
       console.error("Error adding image to PDF:", error);
-      // Fallback: draw a simple rectangle
+      // Show placeholder when image processing fails
       pdf.setFillColor(240, 240, 240);
       pdf.rect(x, y, width, height, "F");
+      pdf.setTextColor(100, 100, 100);
+      pdf.setFontSize(10);
+      pdf.text("Image not available", x + width / 2, y + height / 2, {
+        align: "center",
+      });
+      pdf.setTextColor(0, 0, 0);
     }
   };
 

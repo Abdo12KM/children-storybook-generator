@@ -81,15 +81,21 @@ export function StoryPreview({ story, childName }: StoryPreviewProps) {
         <div className="flex flex-col gap-0 md:grid md:grid-cols-2">
           {/* Image Section */}
           <div className="bg-muted relative aspect-[4/3] w-full md:w-auto">
-            {page.imageUrl && (
+            {page.imageUrl ? (
               <Image
-                src={page.imageUrl || "/placeholder.svg"}
+                src={page.imageUrl}
                 alt={`Illustration for page ${page.pageNumber}`}
                 className="h-full w-full object-cover"
                 radius="none"
                 loading="lazy"
-                fallbackSrc={`/placeholder.svg?height=400&width=600&query=${encodeURIComponent(page.imagePrompt)}`}
               />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-muted">
+                <div className="text-center text-muted-foreground">
+                  <ImageIcon className="mx-auto h-12 w-12 mb-2" />
+                  <p className="text-sm">Image not available</p>
+                </div>
+              </div>
             )}
             <div className="absolute top-4 left-4">
               <Chip variant="solid" color="primary" size="sm">

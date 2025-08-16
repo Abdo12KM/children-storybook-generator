@@ -39,14 +39,14 @@ export interface ImageRequest {
   prompt: string;
   style?: string;
   characterSheet?: string;
+  referenceImage?: string; // Base64 encoded image for consistency
+  pageNumber?: number; // To identify if this is the first image or subsequent
 }
 
 export interface ImageResponse {
   imageUrl: string;
   prompt: string;
-  fallback?: boolean;
   generated?: boolean;
-  message?: string;
   error?: string;
 }
 

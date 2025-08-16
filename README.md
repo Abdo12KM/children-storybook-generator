@@ -168,7 +168,7 @@ Configure story generation in `constants/story.ts`:
 - Utilizes Google's Gemini 2.0 Flash Preview for illustration creation
 - Maintains character consistency across all story pages
 - Supports multiple art styles and custom themes
-- Fallback to placeholder images if API is unavailable
+- Requires valid API key for image generation
 
 ### Educational Value
 

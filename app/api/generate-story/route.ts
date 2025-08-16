@@ -239,9 +239,29 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
 
     console.log("Generating images for story pages...");
 
-    const imagePromises = storyData.pages.map(async (page, index) => {
+    // Generate images sequentially to use the first image as reference for consistency
+    const pagesWithImages = [];
+    let firstImageData = null;
+
+    for (let i = 0; i < storyData.pages.length; i++) {
+      const page = storyData.pages[i];
+      
       try {
         console.log(`Generating image for page ${page.pageNumber}...`);
+
+        // Prepare image request
+        const imageRequestBody: any = {
+          prompt: page.imagePrompt,
+          style: body.artStyle,
+          characterSheet: storyData.characterSheet,
+          pageNumber: page.pageNumber,
+        };
+
+        // Add reference image for consistency (starting from page 2)
+        if (firstImageData && page.pageNumber > 1) {
+          imageRequestBody.referenceImage = firstImageData;
+          console.log(`Using first image as reference for page ${page.pageNumber}`);
+        }
 
         const imageResponse = await fetch(
           `${request.nextUrl.origin}/api/generate-image`,
@@ -250,41 +270,40 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              prompt: page.imagePrompt,
-              style: body.artStyle,
-              characterSheet: storyData.characterSheet,
-            }),
+            body: JSON.stringify(imageRequestBody),
           },
         );
 
         if (imageResponse.ok) {
           const imageData = await imageResponse.json();
-          return {
+          
+          // Store the first generated image as reference for subsequent images
+          if (page.pageNumber === 1 && imageData.imageUrl) {
+            // Extract base64 data from data URL if it's a generated image
+            if (imageData.imageUrl.startsWith('data:image/')) {
+              firstImageData = imageData.imageUrl.split(',')[1]; // Get base64 part
+              console.log("Stored first image as reference for character consistency");
+            }
+          }
+
+          pagesWithImages.push({
             ...page,
             imageUrl: imageData.imageUrl,
-          };
+          });
         } else {
-          console.error(`Failed to generate image for page ${page.pageNumber}`);
-          return {
-            ...page,
-            imageUrl: `/placeholder.svg?height=400&width=600&query=${encodeURIComponent(page.imagePrompt)}`,
-          };
+          const errorData = await imageResponse.json();
+          console.error(`Failed to generate image for page ${page.pageNumber}:`, errorData);
+          throw new Error(`Image generation failed for page ${page.pageNumber}: ${errorData.error || 'Unknown error'}`);
         }
       } catch (error) {
         console.error(
           `Error generating image for page ${page.pageNumber}:`,
           error,
         );
-        return {
-          ...page,
-          imageUrl: `/placeholder.svg?height=400&width=600&query=${encodeURIComponent(page.imagePrompt)}`,
-        };
+        throw new Error(`Failed to generate images for the story: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
-    });
+    }
 
-    // Wait for all images to be generated
-    const pagesWithImages = await Promise.all(imagePromises);
     storyData.pages = pagesWithImages;
 
     console.log("Story and image generation completed successfully");
