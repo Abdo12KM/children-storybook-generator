@@ -29,27 +29,30 @@ export default function StoryCreator() {
 
   if (generatedStory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-card to-muted p-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+      <div className="from-background via-card to-muted min-h-screen bg-gradient-to-br p-4">
+        <div className="mx-auto max-w-6xl">
+          {/* Top Header Row */}
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            {/* Back Button - Top Left */}
             <Button
               variant="bordered"
-              onPress={resetStory}
               startContent={<ArrowLeft className="h-4 w-4" />}
-              className="bg-transparent"
+              className="self-start bg-transparent"
             >
               Create New Story
             </Button>
-            <div className="text-center">
-              <h1 className="text-2xl font-serif font-bold text-foreground">
+            {/* Center Header */}
+            <div className="flex flex-1 flex-col items-center">
+              <h1 className="text-foreground font-serif text-2xl font-bold">
                 Your Story is Ready!
               </h1>
               <p className="text-muted-foreground">
                 A magical tale for {storyData.childName}
               </p>
             </div>
+            {/* Spacer for alignment */}
+            <div className="hidden w-[120px] md:block" />
           </div>
-
           <StoryPreview
             story={generatedStory}
             childName={storyData.childName}
@@ -120,14 +123,14 @@ export default function StoryCreator() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-card to-muted p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="from-background via-card to-muted min-h-screen bg-gradient-to-br p-4">
+      <div className="mx-auto max-w-4xl">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-serif font-bold text-foreground mb-4">
+        <div className="mb-8 text-center">
+          <h1 className="text-foreground mb-4 font-serif text-4xl font-bold">
             AI Storybook Generator
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
             Create magical personalized stories for your little ones.
           </p>
         </div>
@@ -137,7 +140,7 @@ export default function StoryCreator() {
 
         {/* Error Display */}
         {error && (
-          <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-center">
+          <div className="bg-destructive/10 border-destructive/20 mb-6 rounded-lg border p-4 text-center">
             <p className="text-destructive font-medium">Error: {error}</p>
           </div>
         )}

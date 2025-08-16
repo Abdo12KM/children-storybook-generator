@@ -35,12 +35,12 @@ export function ArtStyleStep({
   };
 
   return (
-    <Card className="w-full hover:shadow-lg dark:hover:shadow-white/10 transition-shadow rounded-2xl max-w-2xl mx-auto">
+    <Card className="mx-auto w-full max-w-2xl rounded-2xl transition-shadow hover:shadow-lg dark:hover:shadow-white/10">
       <CardHeader className="text-center">
         {/* <div className="mx-auto mb-2 h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center">
           <Palette className="h-6 w-6 text-accent" />
         </div> */}
-        <CardTitle className="text-2xl font-serif">Art Style & Photo</CardTitle>
+        <CardTitle className="font-serif text-2xl">Art Style & Photo</CardTitle>
         <CardDescription>Choose how your story will look</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -66,17 +66,17 @@ export function ArtStyleStep({
           <Label htmlFor="photoUpload">
             Upload Inspiration Photo (Optional)
           </Label>
-          <div className="border-2 border-dashed border-border rounded-lg p-3 text-center">
+          <div className="border-border rounded-lg border-2 border-dashed p-3 text-center">
             {storyData.uploadedImage ? (
               <div className="space-y-2">
                 <Image
                   src={storyData.uploadedImage}
                   alt="Uploaded inspiration"
-                  className="max-h-32 mx-auto"
+                  className="mx-auto max-h-32"
                   radius="lg"
                   isZoomed
                 />
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Photo uploaded successfully!
                 </p>
                 <Button
@@ -90,15 +90,15 @@ export function ArtStyleStep({
             ) : (
               <div className="space-y-2">
                 <div className="flex justify-center">
-                  <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center">
-                    <Camera className="h-6 w-6 text-secondary" />
+                  <div className="bg-secondary/10 flex h-12 w-12 items-center justify-center rounded-full">
+                    <Camera className="text-secondary h-6 w-6" />
                   </div>
                 </div>
                 <div>
                   <p className="text-sm font-medium">
                     Upload a photo for inspiration
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-muted-foreground text-xs">
                     This will help create consistent characters and scenes
                   </p>
                 </div>

@@ -33,12 +33,12 @@ export function ThemeMessageStep({
   canProceed,
 }: ThemeMessageStepProps) {
   return (
-    <Card className="w-full hover:shadow-lg dark:hover:shadow-white/10 transition-shadow rounded-2xl max-w-2xl mx-auto">
+    <Card className="mx-auto w-full max-w-2xl rounded-2xl transition-shadow hover:shadow-lg dark:hover:shadow-white/10">
       <CardHeader className="text-center">
         {/* <div className="mx-auto mb-2 h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center">
           <BookOpen className="h-6 w-6 text-accent" />
         </div> */}
-        <CardTitle className="text-2xl font-serif">Theme & Message</CardTitle>
+        <CardTitle className="font-serif text-2xl">Theme & Message</CardTitle>
         <CardDescription>What lesson should your story teach?</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -73,7 +73,7 @@ export function ThemeMessageStep({
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="storyLength">Story Length</Label>
             <Select

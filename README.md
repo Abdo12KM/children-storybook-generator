@@ -291,9 +291,10 @@ If you encounter any issues or have questions:
 
 ## 🔮 Future Enhancements
 
+- [ ] Improved image generation quality and consistency across all story pages
+- [ ] Advanced character customization
 - [ ] User authentication and profiles
 - [ ] Saved stories and user libraries
-- [ ] Advanced character customization
 - [ ] Story templates and presets
 - [ ] Story sharing and community features
 - [ ] Story series and sequels
