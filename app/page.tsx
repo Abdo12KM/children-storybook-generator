@@ -22,7 +22,6 @@ export default function StoryCreator() {
     error,
     updateStoryData,
     generateStory,
-    resetStory,
   } = useStoryGenerator();
 
   const { currentStep, nextStep, prevStep, progress } = useStepNavigation();
@@ -126,8 +125,8 @@ export default function StoryCreator() {
     <div className="from-background via-card to-muted min-h-screen bg-gradient-to-br p-4">
       <div className="mx-auto max-w-4xl">
         {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-foreground mb-4 font-serif text-4xl font-bold">
+        <div className="mb-6 text-center">
+          <h1 className="text-foreground font-serif text-4xl font-bold">
             AI Storybook Generator
           </h1>
           <p className="text-muted-foreground mx-auto max-w-2xl text-lg">

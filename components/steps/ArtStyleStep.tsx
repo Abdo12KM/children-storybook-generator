@@ -8,7 +8,14 @@ import {
 import { Select, SelectItem, Button, Image } from "@heroui/react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Palette, ArrowRight, ArrowLeft, Upload, Camera } from "lucide-react";
+import {
+  Palette,
+  ArrowRight,
+  ArrowLeft,
+  Upload,
+  Camera,
+  Wand,
+} from "lucide-react";
 import { ART_STYLE_OPTIONS } from "@/constants";
 import { useImageUpload } from "@/hooks/use-image-upload";
 import { StoryData } from "@/types";
@@ -34,6 +41,14 @@ export function ArtStyleStep({
     updateStoryData("uploadedImage", result);
   };
 
+  // Auto fill handler
+  const handleAutoFill = () => {
+    const randomStyle =
+      ART_STYLE_OPTIONS[Math.floor(Math.random() * ART_STYLE_OPTIONS.length)]
+        .value;
+    updateStoryData("artStyle", randomStyle);
+  };
+
   return (
     <Card className="mx-auto w-full max-w-2xl rounded-2xl transition-shadow hover:shadow-lg dark:hover:shadow-white/10">
       <CardHeader className="text-center">
@@ -44,6 +59,16 @@ export function ArtStyleStep({
         <CardDescription>Choose how your story will look</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
+        <div className="mb-1 flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            onPress={handleAutoFill}
+            startContent={<Wand className="h-4 w-4" />}
+          >
+            Random Fill
+          </Button>
+        </div>
         <div className="space-y-2">
           <Label htmlFor="artStyle">Art Style</Label>
           <Select

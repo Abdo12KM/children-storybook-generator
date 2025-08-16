@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Select, SelectItem, Button } from "@heroui/react";
 import { Label } from "@/components/ui/label";
-import { MapPin, ArrowRight, ArrowLeft } from "lucide-react";
+import { MapPin, ArrowRight, ArrowLeft, Wand } from "lucide-react";
 import { SETTING_OPTIONS } from "@/constants";
 import { StoryData } from "@/types";
 
@@ -27,6 +27,13 @@ export function StorySettingStep({
 }: StorySettingStepProps) {
   const canProceed = storyData.setting;
 
+  // Auto fill handler
+  const handleAutoFill = () => {
+    const randomSetting =
+      SETTING_OPTIONS[Math.floor(Math.random() * SETTING_OPTIONS.length)];
+    updateStoryData("setting", randomSetting);
+  };
+
   return (
     <Card className="mx-auto w-full max-w-2xl rounded-2xl transition-shadow hover:shadow-lg dark:hover:shadow-white/10">
       <CardHeader className="text-center">
@@ -39,6 +46,16 @@ export function StorySettingStep({
         <CardDescription>Where will your adventure take place?</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
+        <div className="mb-1 flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            onPress={handleAutoFill}
+            startContent={<Wand className="h-4 w-4" />}
+          >
+            Random Fill
+          </Button>
+        </div>
         <div className="space-y-2">
           <Label htmlFor="setting">Story Setting</Label>
           <Select

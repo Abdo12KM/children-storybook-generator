@@ -8,7 +8,7 @@ interface StoryProgressProps {
 
 export function StoryProgress({ currentStep, progress }: StoryProgressProps) {
   return (
-    <div className="mx-auto mb-8 w-full max-w-4xl">
+    <div className="mx-auto mb-4 w-full max-w-4xl">
       <div className="xs:px-8 flex flex-col gap-4 md:px-12">
         <div className="flex flex-wrap justify-between gap-2">
           {STEPS.map((step) => {

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Select, SelectItem, Textarea, Button, Spinner } from "@heroui/react";
 import { Label } from "@/components/ui/label";
-import { BookOpen, ArrowLeft, Wand2 } from "lucide-react";
+import { BookOpen, ArrowLeft, Wand2, Wand } from "lucide-react";
 import {
   THEME_OPTIONS,
   STORY_LENGTH_OPTIONS,
@@ -32,6 +32,40 @@ export function ThemeMessageStep({
   isGenerating,
   canProceed,
 }: ThemeMessageStepProps) {
+  // Auto fill handler
+  const handleAutoFill = () => {
+    const randomTheme =
+      THEME_OPTIONS[Math.floor(Math.random() * THEME_OPTIONS.length)];
+    const randomLesson = [
+      "Always be kind to others.",
+      "Never give up on your dreams.",
+      "Teamwork makes everything better.",
+      "Imagination is powerful.",
+      "Courage helps you grow.",
+      "Honesty is the best policy.",
+      "Respect everyone, big or small.",
+      "Helping others makes the world better.",
+      "Patience brings good things.",
+      "Learning from mistakes is important.",
+      "Friendship is a treasure.",
+      "Sharing brings happiness.",
+      "Listening is just as important as speaking.",
+      "Be grateful for what you have.",
+      "Stay curious and keep exploring.",
+    ][Math.floor(Math.random() * 15)];
+    const randomLength =
+      STORY_LENGTH_OPTIONS[
+        Math.floor(Math.random() * STORY_LENGTH_OPTIONS.length)
+      ].value;
+    const randomDifficulty =
+      DIFFICULTY_OPTIONS[Math.floor(Math.random() * DIFFICULTY_OPTIONS.length)]
+        .value;
+    updateStoryData("theme", randomTheme);
+    updateStoryData("moralLesson", randomLesson);
+    updateStoryData("storyLength", randomLength);
+    updateStoryData("difficulty", randomDifficulty);
+  };
+
   return (
     <Card className="mx-auto w-full max-w-2xl rounded-2xl transition-shadow hover:shadow-lg dark:hover:shadow-white/10">
       <CardHeader className="text-center">
@@ -42,6 +76,16 @@ export function ThemeMessageStep({
         <CardDescription>What lesson should your story teach?</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
+        <div className="mb-1 flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            onPress={handleAutoFill}
+            startContent={<Wand className="h-4 w-4" />}
+          >
+            Random Fill
+          </Button>
+        </div>
         <div className="space-y-2">
           <Label htmlFor="theme">Story Theme</Label>
           <Select
