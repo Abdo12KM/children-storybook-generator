@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       VOCABULARY_LEVELS[body.difficulty as keyof typeof VOCABULARY_LEVELS];
 
     // Create the enhanced story generation prompt
-    const storyPrompt = `You are a world-class children's story author and educational expert. Create a personalized, engaging children's storybook with educational value.
+    const storyPrompt = `You are a world-class children's story author and educational expert. You MUST respond with ONLY valid JSON - no additional text before or after.
 
 STORY DETAILS:
 - Child's Name: ${body.childName}
@@ -63,45 +63,20 @@ STORY DETAILS:
 
 ${imageContext}
 
-CHARACTER CONSISTENCY REQUIREMENTS:
-- Create a detailed character sheet description
-- Use this character sheet in every image prompt to maintain consistent appearance
-- Include specific details about appearance, clothing, and distinguishing features
+CRITICAL: Respond with ONLY valid JSON in this exact format (no markdown, no backticks, no additional text):
 
-STORY REQUIREMENTS:
-1. Create an engaging, age-appropriate title
-2. Write exactly ${params.pages} pages of story content
-3. Each page should be approximately ${params.wordsPerPage} words
-4. Include ${body.childName} as a key character who learns and grows
-5. Make language appropriate for ${body.childAge} year olds at ${body.difficulty} reading level
-6. Incorporate the theme of ${body.theme} throughout the story
-7. End with a clear moral lesson about ${body.moralLesson || "kindness and friendship"}
-8. Create detailed, consistent image prompts in ${body.artStyle} style
-
-EDUCATIONAL COMPANION FEATURES:
-- Identify 5-8 key vocabulary words for this age group
-- Create 3-4 thoughtful discussion questions for parents/teachers
-- Suggest 1 creative activity related to the story theme
-
-IMAGE PROMPT REQUIREMENTS:
-- Start each image prompt with the character sheet details for consistency
-- Include art style: "${body.artStyle}"
-- Make images safe, positive, and engaging for children
-- Ensure diversity and inclusivity in character representations
-
-FORMAT YOUR RESPONSE AS JSON:
 {
   "title": "Story Title Here",
   "characterSheet": "Detailed physical description for consistent character appearance",
   "pages": [
     {
       "pageNumber": 1,
-      "content": "Page content here...",
-      "imagePrompt": "[Character sheet details] + scene description in ${body.artStyle} style",
-      "vocabulary": ["word1", "word2"] // 2-3 key words from this page
+      "content": "Page content here (approximately ${params.wordsPerPage} words)...",
+      "imagePrompt": "Character sheet details + scene description in ${body.artStyle} style",
+      "vocabulary": ["word1", "word2"]
     }
   ],
-  "summary": "Brief story summary...",
+  "summary": "Brief story summary",
   "keyVocabulary": ["word1", "word2", "word3", "word4", "word5"],
   "discussionQuestions": [
     "Question 1?",
@@ -111,29 +86,56 @@ FORMAT YOUR RESPONSE AS JSON:
   "activityIdea": "A creative activity suggestion related to the story theme"
 }
 
-Create a magical, educational, and memorable story that will inspire young minds!`;
+Requirements:
+- Create exactly ${params.pages} pages
+- Each page ~${params.wordsPerPage} words
+- Age-appropriate for ${body.childAge} year olds
+- Include ${body.childName} as main character
+- Theme: ${body.theme}
+- Setting: ${body.setting}
+- Main character: ${body.mainCharacter}
+- Moral lesson: ${body.moralLesson || "kindness and friendship"}
+- Art style: ${body.artStyle}
+
+RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
 
     console.log("Generating story with Google Gemini...");
 
-    // Generate the story using Google Gemini
+    // Generate the story using Google Gemini with system instruction
     const { text } = await generateText({
       model: google("gemini-2.5-pro"),
+      system:
+        "You are a children's story author. You MUST respond with ONLY valid JSON format - no additional text, explanations, or markdown. Start your response with { and end with }.",
       prompt: storyPrompt,
       temperature: 0.7,
     });
 
     console.log("Story generated, parsing response...");
+    console.log("Raw response:", text.substring(0, 500) + "...");
 
     // Parse the JSON response
     let storyData: StoryResponse;
     try {
-      // Clean the response to extract JSON
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error("No JSON found in response");
+      // Clean the response - remove any markdown formatting and extra text
+      let cleanedText = text.trim();
+
+      // Remove markdown code blocks if present
+      cleanedText = cleanedText
+        .replace(/```json\s*/g, "")
+        .replace(/```\s*/g, "");
+
+      // Find JSON object boundaries
+      const jsonStart = cleanedText.indexOf("{");
+      const jsonEnd = cleanedText.lastIndexOf("}") + 1;
+
+      if (jsonStart === -1 || jsonEnd === 0) {
+        throw new Error("No JSON object found in response");
       }
 
-      storyData = JSON.parse(jsonMatch[0]);
+      const jsonText = cleanedText.substring(jsonStart, jsonEnd);
+      console.log("Extracted JSON:", jsonText.substring(0, 200) + "...");
+
+      storyData = JSON.parse(jsonText);
 
       // Validate the structure
       if (
@@ -141,7 +143,7 @@ Create a magical, educational, and memorable story that will inspire young minds
         !storyData.pages ||
         !Array.isArray(storyData.pages)
       ) {
-        throw new Error("Invalid story structure");
+        throw new Error("Invalid story structure - missing required fields");
       }
 
       // Ensure we have the right number of pages
@@ -149,27 +151,89 @@ Create a magical, educational, and memorable story that will inspire young minds
         console.log(
           `Warning: Expected ${params.pages} pages, got ${storyData.pages.length}`,
         );
+
+        // Pad or trim pages to match expected count
+        while (storyData.pages.length < params.pages) {
+          const pageNum = storyData.pages.length + 1;
+          storyData.pages.push({
+            pageNumber: pageNum,
+            content: `${body.childName} continued the adventure with the ${body.mainCharacter}, discovering more about ${body.theme}.`,
+            imagePrompt: `${body.mainCharacter} with ${body.childName} in ${body.setting}, ${body.artStyle} style, children's book illustration`,
+            vocabulary: ["adventure", "discover"],
+          });
+        }
+
+        if (storyData.pages.length > params.pages) {
+          storyData.pages = storyData.pages.slice(0, params.pages);
+        }
+      }
+
+      // Ensure all required fields exist with defaults
+      if (!storyData.characterSheet) {
+        storyData.characterSheet = `${body.mainCharacter} is ${body.characterDescription || "a friendly character"} with ${characterTraits} personality.`;
+      }
+      if (!storyData.summary) {
+        storyData.summary = `A story about ${body.childName} learning about ${body.theme} with a ${body.mainCharacter}.`;
+      }
+      if (!storyData.keyVocabulary || !Array.isArray(storyData.keyVocabulary)) {
+        storyData.keyVocabulary = [
+          "adventure",
+          "friendship",
+          "brave",
+          "kind",
+          "learn",
+        ];
+      }
+      if (
+        !storyData.discussionQuestions ||
+        !Array.isArray(storyData.discussionQuestions)
+      ) {
+        storyData.discussionQuestions = [
+          `What did ${body.childName} learn in this story?`,
+          `How would you handle the same situation?`,
+          `What was your favorite part of the adventure?`,
+        ];
+      }
+      if (!storyData.activityIdea) {
+        storyData.activityIdea = `Draw a picture of your favorite scene from ${body.childName}'s adventure.`;
       }
     } catch (parseError) {
       console.error("Failed to parse story JSON:", parseError);
+      console.error("Original response:", text);
+
+      // Try to extract any partial JSON for debugging
+      try {
+        const partialMatch = text.match(/\{[^}]*"title"[^}]*\}/);
+        if (partialMatch) {
+          console.log("Found partial JSON:", partialMatch[0]);
+        }
+      } catch (e) {
+        // Ignore partial extraction errors
+      }
 
       // Fallback: create a simple story structure
       storyData = {
-        title: `${body.childName} and the ${body.mainCharacter}`,
-        pages: [
-          {
-            pageNumber: 1,
-            content: `Once upon a time, there was a child named ${body.childName} who met a wonderful ${body.mainCharacter} in ${body.setting}. This is their magical adventure about ${body.theme}.`,
-            imagePrompt: `A child named ${body.childName} meeting a ${body.mainCharacter} in ${body.setting}, children's book illustration style`,
-          },
-        ],
-        summary: `A heartwarming story about ${body.childName} learning about ${body.theme} with help from a ${body.mainCharacter}.`,
-        keyVocabulary: ["adventure", "friendship", "brave"],
+        title: `${body.childName}'s Adventure with the ${body.mainCharacter}`,
+        characterSheet: `${body.mainCharacter} is ${body.characterDescription || "a friendly character"} with ${characterTraits} personality traits.`,
+        pages: Array.from({ length: params.pages }, (_, i) => ({
+          pageNumber: i + 1,
+          content:
+            i === 0
+              ? `Once upon a time, there was a child named ${body.childName} who lived in ${body.setting}. One day, ${body.childName} met a wonderful ${body.mainCharacter} who would teach them about ${body.theme}.`
+              : i === params.pages - 1
+                ? `And so ${body.childName} learned that ${body.moralLesson || "kindness and friendship are the most important things in life"}. From that day forward, ${body.childName} always remembered this important lesson. The End.`
+                : `${body.childName} and the ${body.mainCharacter} continued their adventure in ${body.setting}, learning more about ${body.theme} together.`,
+          imagePrompt: `${body.mainCharacter} with ${body.childName} in ${body.setting}, ${body.artStyle} style, children's book illustration`,
+          vocabulary: ["adventure", "friendship", "brave"].slice(0, 2),
+        })),
+        summary: `A heartwarming story about ${body.childName} learning about ${body.theme} with help from a ${body.mainCharacter} in ${body.setting}.`,
+        keyVocabulary: ["adventure", "friendship", "brave", "kind", "learn"],
         discussionQuestions: [
           `What did ${body.childName} learn from the ${body.mainCharacter}?`,
-          `How can you be brave like ${body.childName}?`,
+          `How can you be like ${body.childName} in your own life?`,
+          `What would you do if you met a ${body.mainCharacter}?`,
         ],
-        activityIdea: `Draw your own picture of ${body.childName} and the ${body.mainCharacter} having an adventure together.`,
+        activityIdea: `Draw your own picture of ${body.childName} and the ${body.mainCharacter} having an adventure in ${body.setting}.`,
       };
     }
 
