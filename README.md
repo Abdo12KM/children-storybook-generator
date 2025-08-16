@@ -1,89 +1,307 @@
-# AI-Powered Personalized Children's Storybook Generator
+# Children's Storybook Generator 📚✨
 
-A web application that allows users to create unique, personalized children's storybooks. By providing a few simple inputs (character name, theme, moral), the app uses generative AI to write a story, generate illustrations, and compile a downloadable PDF.
+An AI-powered web application that creates personalized children's storybooks with custom illustrations. Built with Next.js 15, React 19, and Google's Gemini AI.
 
----
+## 🌟 Features
 
-## 🌟 Key Features
+### 📖 Story Generation
 
-- **Simple & Fun Personalization:** An intuitive, multi-step form guides users through story creation.
-- **AI-Generated Story Content:** Uses a powerful LLM (e.g., Google Gemini) to write page-by-page story content.
-- **AI-Generated Illustrations:** Creates page illustrations via a text-to-image model (e.g., Stable Diffusion).
-- **Multiple Art Styles:** Choose from styles like Cartoon, Watercolor, or Fantasy.
-- **Instant PDF Generation:** Compiles text and images into a high-quality, downloadable PDF.
-- **Fully Responsive UI:** Works on desktop and mobile devices.
+- **Personalized Stories**: Create unique stories tailored to your child's name, age, and preferences
+- **AI-Powered Content**: Leverage Google's Gemini AI for high-quality story generation
+- **Multiple Story Lengths**: Choose from short (6 pages), medium (12 pages), or long (20 pages) stories
+- **Age-Appropriate Content**: Stories adapted for different age groups (2-4, 4-6, 6-8, 8-10 years)
+- **Educational Value**: Each story includes moral lessons, vocabulary building, and discussion questions
 
----
+### 🎨 Visual Customization
 
-## ⚙️ How It Works
+- **AI-Generated Illustrations**: Automatic image generation using Google's Gemini 2.0 Flash Preview
+- **Multiple Art Styles**: Choose from watercolor, cartoon, realistic, digital art, and more
+- **Character Consistency**: Maintains consistent character appearance throughout the story
+- **Image Upload Support**: Upload inspiration images to influence the story theme and visuals
 
-The system coordinates frontend and backend services to generate text and images, then compiles them into a PDF:
+### 🎯 Interactive Features
 
-1. **The Story Wizard:** User fills a form with:
-   - Main character's name
-   - Friend/sidekick
-   - Setting
-   - Moral or lesson
-   - Chosen art style
-2. **API Request:** Frontend posts data to `/api/generate-story`.
-3. **Text Generation:** Backend creates a meta-prompt and calls an LLM (via Vercel AI SDK / Google Gemini) returning structured JSON: story pages + image prompts.
-4. **Image Generation:** For each page, backend calls `/api/generate-images` to create illustrations.
-5. **Data Aggregation:** Backend combines story text and image URLs into a final JSON response.
-6. **PDF Compilation & Download:** Frontend renders a PDF using `@react-pdf/renderer` or `jsPDF` and offers a download link.
+- **Step-by-Step Creation**: Guided 5-step process for story creation
+- **Character Customization**: Define main character appearance and personality traits
+- **Story Settings**: Choose from various environments (magical forest, space, underwater, etc.)
+- **Theme Selection**: Pick themes and moral lessons for educational value
+- **Difficulty Levels**: Beginner, intermediate, and advanced vocabulary options
 
----
+### 📱 User Experience
 
-## 🛠️ Tech Stack & Architecture
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+- **Dark/Light Mode**: Built-in theme switching with next-themes
+- **Progress Tracking**: Visual progress indicator throughout the creation process
+- **PDF Export**: Download generated stories as beautifully formatted PDF files
+- **Modern UI**: Built with HeroUI and Shadcn UI components
 
-This project uses a modern full-stack TypeScript architecture.
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm (recommended) or npm
+- Google Generative AI API key
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/Abdo12KM/children-storybook-generator.git
+   cd children-storybook-generator
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+   Create a `.env.local` file in the root directory:
+
+   ```env
+   GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key_here
+   ```
+
+4. **Run the development server**
+
+   ```bash
+   pnpm dev
+   ```
+
+5. **Open in browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 🛠️ Tech Stack
 
 ### Frontend
 
-- **Framework:** Next.js (App Router)
-- **Language:** TypeScript
-- **UI Library:** HeroUI or Shadcn
-- **Styling:** TailwindCSS
-- **Animations:** Framer Motion
-- **Forms & Validation:** React Hook Form + Zod
-- **State Management:** TanStack Query
-- **PDF Generation:** @react-pdf/renderer or jsPDF
+- **Framework**: Next.js 15 with App Router
+- **React**: React 19 with modern hooks and server components
+- **UI Components**:
+  - HeroUI and Shadcn for primary components
+  - Tailwind CSS for styling
+- **Icons**: Lucide React
+- **Animations**: Framer Motion
+- **Forms**: React Hook Form with Zod validation
 
-### Backend
+### Backend & AI
 
-- **Environment:** Node.js (Next.js API routes)
-- **AI Text Generation:** Vercel AI SDK + Google Gemini
-- **AI Image Generation:** Stability AI (Stable Diffusion) or Gemini
+- **API Routes**: Next.js API routes for server-side logic
+- **AI Integration**:
+  - Google Gemini 2.5 Pro for story text generation
+  - Google Gemini 2.0 Flash Preview for story images generation
+- **PDF Generation**: jsPDF for story export
 
-### Deployment
+### Development Tools
 
-- **Platform:** Vercel
+- **TypeScript**: Full type safety
+- **ESLint & Prettier**: Code formatting and linting
+- **PostCSS**: CSS processing
+- **Tailwind CSS v4**: Latest styling framework
 
----
+## 📁 Project Structure
 
-## 🧠 Elevating the Project: Novelty & Advanced Features
+```
+├── app/                    # Next.js 15 App Router
+│   ├── api/               # API routes
+│   │   ├── generate-story/ # Story generation endpoint
+│   │   └── generate-image/ # Image generation endpoint
+│   ├── globals.css        # Global styles
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx          # Main story creator page
+│   └── providers.tsx     # App providers
+├── components/            # React components
+│   ├── steps/            # Story creation steps
+│   ├── ui/               # Reusable UI components
+│   ├── StoryPreview.tsx  # Story display component
+│   └── StoryProgress.tsx # Progress indicator
+├── constants/            # App constants and configurations
+├── hooks/               # Custom React hooks
+├── lib/                 # Utility libraries
+├── services/            # API service layer
+├── types/               # TypeScript type definitions
+└── utils/               # Helper utilities
+```
 
-The core idea exists elsewhere; the novelty here is the execution — solving real UX problems and adding thoughtful features. Below are three angles to make the project stand out; pick one or combine them.
+## 🎨 Story Creation Process
 
-### 1) Character Consistency
+### Step 1: Child Details
 
-Problem: AI-generated illustrations often show inconsistent character appearances. Solution: generate a structured `character_sheet` alongside the story and inject it into every image prompt to keep appearances consistent across pages.
+- Enter child's name and age
+- Select appropriate age group for content difficulty
 
-Example: prepend "who has curly red hair, bright green eyes, and wears a yellow raincoat with blue boots" to every image prompt for "Lily." This creates a cohesive character pipeline.
+### Step 2: Main Character
 
-### 2) Photo-to-Story Personalization
+- Define the main character type
+- Describe appearance and personality traits
+- Choose character traits from predefined options
 
-Allow users to upload an image (toy, drawing, photo). Use a vision-capable model (e.g., Gemini Vision) to describe the image and seed the story. This enables deep personalization and multi-modal input.
+### Step 3: Story Setting
 
-### 3) Educational Companion
+- Select story environment (forest, castle, space, etc.)
+- Choose story theme and moral lesson
+- Set vocabulary difficulty level
 
-Prompt the LLM for additional structured outputs: key vocabulary (3–5 words), discussion questions (2–3), and an activity idea. Render these as special pages in the PDF (Activity Corner), using different templates in `@react-pdf/renderer`.
+### Step 4: Art Style & Photo
 
----
+- Choose from multiple art styles
+- Optionally upload inspiration images
+- Preview style examples
+
+### Step 5: Theme & Message
+
+- Finalize story theme
+- Select moral lesson and educational focus
+- Choose story length
+
+## 🔧 Configuration
+
+### Environment Variables
+
+```env
+# Required for AI features
+GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key_here
+
+# Optional: Custom API endpoints
+NEXT_PUBLIC_API_URL=http://localhost:3000/api
+```
+
+### Story Parameters
+
+Configure story generation in `constants/story.ts`:
+
+- Story lengths and page counts
+- Vocabulary levels
+- Age group settings
+- Theme options
+
+## 🌐 API Endpoints
+
+### POST `/api/generate-story`
+
+Generates a complete story with pages, vocabulary, and discussion questions.
+
+**Request Body:**
+
+```typescript
+{
+  childName: string;
+  childAge: string;
+  mainCharacter: string;
+  characterDescription: string;
+  setting: string;
+  theme: string;
+  moralLesson: string;
+  storyLength: string;
+  artStyle: string;
+  personalityTraits: string[];
+  difficulty: string;
+}
+```
+
+### POST `/api/generate-image`
+
+Generates custom illustrations for story pages.
+
+**Request Body:**
+
+```typescript
+{
+  prompt: string;
+  style?: string;
+  characterSheet?: string;
+}
+```
+
+## 🎯 Features in Detail
+
+### AI Story Generation
+
+- Uses Google's Gemini Pro for creative, age-appropriate storytelling
+- Generates complete narratives with proper pacing and character development
+- Includes educational elements like vocabulary words and moral lessons
+- Creates discussion questions for parent-child interaction
+
+### Image Generation
+
+- Utilizes Google's Gemini 2.0 Flash Preview for illustration creation
+- Maintains character consistency across all story pages
+- Supports multiple art styles and custom themes
+- Fallback to placeholder images if API is unavailable
+
+### Educational Value
+
+- Age-appropriate vocabulary based on selected difficulty
+- Moral lessons and character development themes
+- Discussion questions for comprehension and engagement
+- Activity suggestions for extended learning
+
+## 🔄 Development Workflow
+
+### Available Scripts
+
+```bash
+# Development
+pnpm dev          # Start development server
+pnpm build        # Build for production
+pnpm start        # Start production server
+pnpm lint         # Run ESLint
+
+# Code Formatting
+pnpm prettier     # Format codebase with Prettier
+```
+
+### Code Quality
+
+- TypeScript for type safety
+- ESLint for code quality
+- Prettier for consistent formatting
+- Zod for runtime validation
+
+## 🌟 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Google Generative AI** for powerful AI capabilities
+- **Vercel** for Next.js framework and deployment platform
+- **HeroUI** and **Shadcn UI** for beautiful, accessible components
+- **Tailwind CSS** for utility-first styling
+- **Lucide** for comprehensive icon library
+
+## 🆘 Support & Issues
+
+If you encounter any issues or have questions:
+
+1. Check the [Issues](https://github.com/Abdo12KM/children-storybook-generator/issues) page
+2. Create a new issue with detailed description
+3. Include environment details and error messages
 
 ## 🔮 Future Enhancements
 
-- **User Accounts & Gallery:** Save generated books to user profiles.
-- **Interactive Preview:** Use `<PDFViewer>` to preview books before download.
-- **More Customization:** Page count, character traits, photo uploads.
-- **"Surprise Me" Feature:** Quickly generate an idea for the user.
-- **Physical Printing:** Integrate with print-on-demand services.
+- [ ] User authentication and profiles
+- [ ] Saved stories and user libraries
+- [ ] Advanced character customization
+- [ ] Story templates and presets
+- [ ] Story sharing and community features
+- [ ] Story series and sequels
+- [ ] Multi-language support
+- [ ] Interactive story elements
+- [ ] Voice narration for stories
+- [ ] Print-ready formatting options
+
+---
+
+**Built with ❤️ for creating magical stories that inspire young minds**

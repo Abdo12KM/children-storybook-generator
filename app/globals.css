@@ -1,13 +1,15 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Note: You may need to change the path to fit your project structure */
+@plugin './hero.ts';
+@source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color tokens for magical children's storybook theme */
   --background: oklch(1 0 0); /* Pure white */
   --foreground: oklch(0.205 0 0); /* Dark gray #1f2937 */
-  --card: oklch(0.97 0 0); /* Light gray #f1f5f9 */
+  --card: oklch(0.96 0 0); /* Light gray #f1f5f9 */
   --card-foreground: oklch(0.205 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.205 0 0);
@@ -15,7 +17,7 @@
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.556 0 0); /* Medium gray #6b7280 */
   --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.97 0 0); /* Light background */
+  --muted: oklch(0.94 0 0); /* Light background */
   --muted-foreground: oklch(0.439 0 0); /* Darker muted text */
   --accent: oklch(0.646 0.222 285.75); /* Purple accent #8b5cf6 */
   --accent-foreground: oklch(1 0 0);
@@ -121,4 +123,9 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@theme {
+  --breakpoint-xxs: 320px;
+  --breakpoint-xs: 480px;
 }

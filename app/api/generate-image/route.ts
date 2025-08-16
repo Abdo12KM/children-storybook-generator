@@ -1,15 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-
-interface ImageRequest {
-  prompt: string;
-  style?: string;
-  characterSheet?: string;
-}
-
-interface ImageResponse {
-  imageUrl: string;
-  prompt: string;
-}
+import { ImageRequest, ImageResponse } from "@/types";
 
 export async function POST(request: NextRequest) {
   try {

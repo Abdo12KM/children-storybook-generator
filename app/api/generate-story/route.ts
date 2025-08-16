@@ -1,39 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { generateText } from "ai";
-import { google } from "@ai-sdk/google"; // Changed from groq to google
-
-interface StoryRequest {
-  childName: string;
-  childAge: string;
-  mainCharacter: string;
-  characterDescription: string;
-  setting: string;
-  theme: string;
-  moralLesson: string;
-  storyLength: string;
-  artStyle: string;
-  uploadedImage?: string;
-  personalityTraits: string[];
-  difficulty: string;
-}
-
-interface StoryPage {
-  pageNumber: number;
-  content: string;
-  imagePrompt: string;
-  imageUrl?: string;
-  vocabulary?: string[];
-}
-
-interface StoryResponse {
-  title: string;
-  pages: StoryPage[];
-  summary: string;
-  characterSheet?: string;
-  keyVocabulary: string[];
-  discussionQuestions: string[];
-  activityIdea: string;
-}
+import { google } from "@ai-sdk/google";
+import { StoryRequest, StoryResponse } from "@/types";
+import { STORY_PARAMS, VOCABULARY_LEVELS } from "@/constants";
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,15 +24,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Determine story parameters based on length
-    const storyParams = {
-      short: { pages: 6, wordsPerPage: 50 },
-      medium: { pages: 12, wordsPerPage: 60 },
-      long: { pages: 20, wordsPerPage: 70 },
-    };
-
     const params =
-      storyParams[body.storyLength as keyof typeof storyParams] ||
-      storyParams.short;
+      STORY_PARAMS[body.storyLength as keyof typeof STORY_PARAMS] ||
+      STORY_PARAMS.short;
 
     // Create enhanced character description for consistency
     const characterTraits =
@@ -80,14 +43,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Determine difficulty level content
-    const vocabularyLevel = {
-      beginner:
-        "Use simple, common words that are easy to read and understand.",
-      intermediate:
-        "Mix simple words with some slightly more challenging vocabulary to help learning.",
-      advanced:
-        "Include rich vocabulary and descriptive language while remaining age-appropriate.",
-    };
+    const vocabularyInstruction =
+      VOCABULARY_LEVELS[body.difficulty as keyof typeof VOCABULARY_LEVELS];
 
     // Create the enhanced story generation prompt
     const storyPrompt = `You are a world-class children's story author and educational expert. Create a personalized, engaging children's storybook with educational value.
@@ -95,7 +52,7 @@ export async function POST(request: NextRequest) {
 STORY DETAILS:
 - Child's Name: ${body.childName}
 - Age Group: ${body.childAge}
-- Reading Level: ${body.difficulty} - ${vocabularyLevel[body.difficulty as keyof typeof vocabularyLevel]}
+- Reading Level: ${body.difficulty} - ${vocabularyInstruction}
 - Main Character: ${body.mainCharacter}
 - Character Details: ${characterSheet}
 - Setting: ${body.setting}

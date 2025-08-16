@@ -2,6 +2,8 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
+import { Providers } from "./providers";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -18,7 +20,6 @@ const sourceSans = Source_Sans_3({
 export const metadata: Metadata = {
   title: "AI Storybook Generator",
   description: "Create magical personalized children's storybooks with AI",
-  generator: "v0.app",
 };
 
 export default function RootLayout({
@@ -37,7 +38,14 @@ html {
 }
         `}</style>
       </head>
-      <body>{children}</body>
+      <body>
+        <Providers>
+          <div className="absolute top-4 right-4">
+            <ThemeSwitcher />
+          </div>
+          {children}
+        </Providers>
+      </body>
     </html>
   );
 }
