@@ -31,8 +31,6 @@ export const generateStoryPDF = async (
   story: GeneratedStory,
   childName?: string,
 ): Promise<void> => {
-  console.log("Starting client-side PDF generation...");
-
   // Dynamically import jsPDF to avoid SSR issues
   const { jsPDF } = await import("jspdf");
 
@@ -250,6 +248,4 @@ export const generateStoryPDF = async (
   // Save the PDF
   const fileName = `${story.title.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`;
   pdf.save(fileName);
-
-  console.log("PDF generated and downloaded successfully (client-side)");
 };

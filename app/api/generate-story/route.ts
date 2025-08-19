@@ -3,6 +3,7 @@ import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 import { StoryRequest, StoryResponse } from "@/types";
 import { STORY_PARAMS, VOCABULARY_LEVELS } from "@/constants";
+import { logger } from "@/utils/logger";
 
 export async function POST(request: NextRequest) {
   try {
@@ -99,7 +100,7 @@ Requirements:
 
 RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
 
-    console.log("Generating story with Google Gemini...");
+    logger.info("Generating story with Google Gemini...");
 
     // Generate the story using Google Gemini with system instruction
     const { text } = await generateText({
@@ -110,8 +111,8 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
       temperature: 0.7,
     });
 
-    console.log("Story generated, parsing response...");
-    console.log("Raw response:", text.substring(0, 500) + "...");
+    logger.info("Story generated, parsing response...");
+    logger.debug("Raw response:", text.substring(0, 500) + "...");
 
     // Parse the JSON response
     let storyData: StoryResponse;
@@ -133,7 +134,7 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
       }
 
       const jsonText = cleanedText.substring(jsonStart, jsonEnd);
-      console.log("Extracted JSON:", jsonText.substring(0, 200) + "...");
+      logger.debug("Extracted JSON:", jsonText.substring(0, 200) + "...");
 
       storyData = JSON.parse(jsonText);
 
@@ -148,8 +149,8 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
 
       // Ensure we have the right number of pages
       if (storyData.pages.length !== params.pages) {
-        console.log(
-          `Warning: Expected ${params.pages} pages, got ${storyData.pages.length}`,
+        logger.warn(
+          `Expected ${params.pages} pages, got ${storyData.pages.length}`,
         );
 
         // Pad or trim pages to match expected count
@@ -205,7 +206,7 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
       try {
         const partialMatch = text.match(/\{[^}]*"title"[^}]*\}/);
         if (partialMatch) {
-          console.log("Found partial JSON:", partialMatch[0]);
+          logger.debug("Found partial JSON:", partialMatch[0]);
         }
       } catch (e) {
         // Ignore partial extraction errors
@@ -237,7 +238,7 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
       };
     }
 
-    console.log("Generating images for story pages...");
+    logger.info("Generating images for story pages...");
 
     // Generate images sequentially to use the first image as reference for consistency
     const pagesWithImages = [];
@@ -245,9 +246,9 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
 
     for (let i = 0; i < storyData.pages.length; i++) {
       const page = storyData.pages[i];
-      
+
       try {
-        console.log(`Generating image for page ${page.pageNumber}...`);
+        logger.debug(`Generating image for page ${page.pageNumber}...`);
 
         // Prepare image request
         const imageRequestBody: any = {
@@ -260,7 +261,9 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
         // Add reference image for consistency (starting from page 2)
         if (firstImageData && page.pageNumber > 1) {
           imageRequestBody.referenceImage = firstImageData;
-          console.log(`Using first image as reference for page ${page.pageNumber}`);
+          logger.debug(
+            `Using first image as reference for page ${page.pageNumber}`,
+          );
         }
 
         const imageResponse = await fetch(
@@ -276,13 +279,15 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
 
         if (imageResponse.ok) {
           const imageData = await imageResponse.json();
-          
+
           // Store the first generated image as reference for subsequent images
           if (page.pageNumber === 1 && imageData.imageUrl) {
             // Extract base64 data from data URL if it's a generated image
-            if (imageData.imageUrl.startsWith('data:image/')) {
-              firstImageData = imageData.imageUrl.split(',')[1]; // Get base64 part
-              console.log("Stored first image as reference for character consistency");
+            if (imageData.imageUrl.startsWith("data:image/")) {
+              firstImageData = imageData.imageUrl.split(",")[1]; // Get base64 part
+              logger.debug(
+                "Stored first image as reference for character consistency",
+              );
             }
           }
 
@@ -292,21 +297,28 @@ RESPOND WITH ONLY VALID JSON - NO OTHER TEXT:`;
           });
         } else {
           const errorData = await imageResponse.json();
-          console.error(`Failed to generate image for page ${page.pageNumber}:`, errorData);
-          throw new Error(`Image generation failed for page ${page.pageNumber}: ${errorData.error || 'Unknown error'}`);
+          console.error(
+            `Failed to generate image for page ${page.pageNumber}:`,
+            errorData,
+          );
+          throw new Error(
+            `Image generation failed for page ${page.pageNumber}: ${errorData.error || "Unknown error"}`,
+          );
         }
       } catch (error) {
         console.error(
           `Error generating image for page ${page.pageNumber}:`,
           error,
         );
-        throw new Error(`Failed to generate images for the story: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        throw new Error(
+          `Failed to generate images for the story: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
       }
     }
 
     storyData.pages = pagesWithImages;
 
-    console.log("Story and image generation completed successfully");
+    logger.info("Story and image generation completed successfully");
 
     return NextResponse.json(storyData);
   } catch (error) {

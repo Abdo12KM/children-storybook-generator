@@ -1,10 +1,18 @@
 # StorySprout 📚✨
 
-An AI-powered web application that creates personalized children's storybooks with custom illustrations. Built with Next.js 15, React 19, and Google's Gemini AI.
+An AI-powered web application that creates personalized children's storybooks with custom illustrations. Built with Next.js 15, React 19, Supabase, and Google's Gemini AI.
 
 ## 🌟 Features
 
-### 📖 Story Generation
+### � User Authentication & Management
+
+- **Secure Authentication**: Email/password and social login (Google, GitHub) via Supabase Auth
+- **User Profiles**: Personalized user accounts with preferences and settings
+- **Story Library**: Save, organize, and manage your created stories
+- **Collections**: Organize stories into custom folders/collections
+- **Public Sharing**: Share stories with secure, shareable links
+
+### �📖 Story Generation
 
 - **Personalized Stories**: Create unique stories tailored to your child's name, age, and preferences
 - **AI-Powered Content**: Leverage Google's Gemini AI for high-quality story generation
@@ -42,6 +50,7 @@ An AI-powered web application that creates personalized children's storybooks wi
 - Node.js 18+
 - pnpm (recommended) or npm
 - Google Generative AI API key
+- Supabase account and project
 
 ### Installation
 
@@ -59,19 +68,39 @@ An AI-powered web application that creates personalized children's storybooks wi
    ```
 
 3. **Set up environment variables**
-   Create a `.env.local` file in the root directory:
+
+   Copy `.env.example` to `.env.local` and fill in your values:
 
    ```env
+   # Supabase Configuration
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+   # Database (PostgreSQL via Supabase)
+   DATABASE_URL=postgresql://postgres:[password]@[host]:[port]/[database]
+
+   # Google AI API
    GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key_here
+
+   # Application URL (for OAuth redirects)
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
    ```
 
-4. **Run the development server**
+4. **Set up the database**
+
+   ```bash
+   # Generate and apply database migrations
+   pnpm drizzle-kit generate
+   pnpm drizzle-kit push
+   ```
+
+5. **Run the development server**
 
    ```bash
    pnpm dev
    ```
 
-5. **Open in browser**
+6. **Open in browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 🛠️ Tech Stack
@@ -81,123 +110,110 @@ An AI-powered web application that creates personalized children's storybooks wi
 - **Framework**: Next.js 15 with App Router
 - **React**: React 19 with modern hooks and server components
 - **UI Components**:
-  - HeroUI and Shadcn for primary components
+  - HeroUI for primary components
   - Tailwind CSS for styling
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
-- **Forms**: React Hook Form with Zod validation
+- **State Management**: React hooks and context
 
-### Backend & AI
+### Backend & Database
 
+- **Authentication**: Supabase Auth with social providers
+- **Database**: PostgreSQL via Supabase
+- **ORM**: Drizzle ORM with TypeScript
 - **API Routes**: Next.js API routes for server-side logic
-- **AI Integration**:
-  - Google Gemini 2.5 Pro for story text generation
-  - Google Gemini 2.0 Flash Preview for story images generation
+
+### AI Integration
+
+- **Story Generation**: Google Gemini 2.5 Pro for text
+- **Image Generation**: Google Gemini 2.0 Flash Preview for illustrations
 - **PDF Generation**: jsPDF for story export
 
 ### Development Tools
 
 - **TypeScript**: Full type safety
 - **ESLint & Prettier**: Code formatting and linting
-- **PostCSS**: CSS processing
-- **Tailwind CSS v4**: Latest styling framework
+- **Drizzle Kit**: Database migrations and management
+- **Tailwind CSS**: Utility-first styling
 
-## 🎨 Story Creation Process
+## �️ Project Structure
 
-### Step 1: Child Details
-
-- Enter child's name and age
-- Select appropriate age group for content difficulty
-
-### Step 2: Main Character
-
-- Define the main character type
-- Describe appearance and personality traits
-- Choose character traits from predefined options
-
-### Step 3: Story Setting
-
-- Select story environment (forest, castle, space, etc.)
-- Choose story theme and moral lesson
-- Set vocabulary difficulty level
-
-### Step 4: Art Style & Photo
-
-- Choose from multiple art styles
-- Optionally upload inspiration images
-- Preview style examples
-
-### Step 5: Theme & Message
-
-- Finalize story theme
-- Select moral lesson and educational focus
-- Choose story length
-
-## 🔧 Configuration
-
-### Environment Variables
-
-```env
-# Required for AI features
-GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key_here
-
-# Optional: Custom API endpoints
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
+```
+├── app/                    # Next.js App Router pages
+│   ├── api/               # API routes
+│   ├── auth/              # Authentication pages
+│   ├── dashboard/         # User dashboard
+│   ├── landing/           # Landing page
+│   ├── login/             # Login page
+│   ├── signup/            # Registration page
+│   └── create/            # Story creation page
+├── components/            # Reusable UI components
+├── hooks/                 # Custom React hooks
+├── lib/                   # Utility libraries
+│   └── supabase/         # Supabase client configuration
+├── services/              # Business logic and API calls
+├── db/                    # Database schema and configuration
+├── types/                 # TypeScript type definitions
+└── constants/             # Application constants
 ```
 
-### Story Parameters
+## 🔧 Database Schema
 
-Configure story generation in `constants/story.ts`:
+The application uses a comprehensive PostgreSQL schema with the following main tables:
 
-- Story lengths and page counts
-- Vocabulary levels
-- Age group settings
-- Theme options
+- **users**: User authentication and profiles
+- **stories**: Generated stories with metadata
+- **story_images**: Individual page images
+- **user_preferences**: User settings and defaults
+- **story_collections**: Organization folders
+- **story_collection_items**: Many-to-many relationships
+- **story_shares**: Public sharing functionality
 
-## 🎯 Features in Detail
+See `DATABASE.md` for detailed schema documentation.
 
-### AI Story Generation
+## 🎯 User Flow
 
-- Uses Google's Gemini Pro for creative, age-appropriate storytelling
-- Generates complete narratives with proper pacing and character development
-- Includes educational elements like vocabulary words and moral lessons
-- Creates discussion questions for parent-child interaction
+### For New Users
 
-### Image Generation
+1. **Landing Page**: Learn about StorySprout features
+2. **Sign Up**: Create account with email or social login
+3. **Dashboard**: Welcome screen with quick start guide
+4. **Create Story**: 5-step guided story creation process
+5. **Story Library**: View and organize created stories
 
-- Utilizes Google's Gemini 2.0 Flash Preview for illustration creation
-- Maintains character consistency across all story pages
-- Supports multiple art styles and custom themes
-- Requires valid API key for image generation
+### For Returning Users
 
-### Educational Value
+1. **Sign In**: Email/password or social login
+2. **Dashboard**: Overview of recent stories and collections
+3. **Library**: Browse and search story collection
+4. **Create**: Generate new stories
+5. **Share**: Share stories with family and friends
 
-- Age-appropriate vocabulary based on selected difficulty
-- Moral lessons and character development themes
-- Discussion questions for comprehension and engagement
-- Activity suggestions for extended learning
+## 🔐 Authentication & Security
 
-## 🔄 Development Workflow
+- **Supabase Auth**: Enterprise-grade authentication
+- **Social Providers**: Google and GitHub OAuth
+- **Row Level Security**: Database-level security policies
+- **Session Management**: Secure session handling
+- **Protected Routes**: Middleware-based route protection
 
-### Available Scripts
+## � API Documentation
 
-```bash
-# Development
-pnpm dev          # Start development server
-pnpm build        # Build for production
-pnpm start        # Start production server
-pnpm lint         # Run ESLint
+### Authentication Endpoints
 
-# Code Formatting
-pnpm prettier     # Format codebase with Prettier
-```
+- `POST /api/auth/sync-user` - Sync user data after authentication
 
-### Code Quality
+### Story Endpoints
 
-- TypeScript for type safety
-- ESLint for code quality
-- Prettier for consistent formatting
-- Zod for runtime validation
+- `POST /api/generate-story` - Generate new story with AI
+- `POST /api/generate-image` - Generate story illustrations
+- `POST /api/stories/save` - Save generated story to database
+
+### Future Endpoints (to be implemented)
+
+- `GET /api/stories` - List user stories
+- `GET /api/collections` - List user collections
+- `POST /api/stories/share` - Create shareable link
 
 ## 🌟 Contributing
 
@@ -207,39 +223,152 @@ pnpm prettier     # Format codebase with Prettier
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## � Environment Setup
+
+### Supabase Setup
+
+1. Create a new Supabase project
+2. Copy the project URL and anon key
+3. Set up authentication providers (Google, GitHub)
+4. Configure database with provided schema
+
+### Google AI Setup
+
+1. Get Google Generative AI API key
+2. Enable Gemini models in your Google Cloud project
+3. Add API key to environment variables
+
+## 🆘 Troubleshooting
+
+### Common Issues
+
+1. **Database Connection Errors**
+   - Verify DATABASE_URL format
+   - Check Supabase connection pooling settings
+
+2. **Authentication Issues**
+   - Verify Supabase keys are correct
+   - Check OAuth redirect URLs
+
+3. **Image Generation Failures**
+   - Verify Google AI API key
+   - Check API quotas and limits
+
+## � Production Deployment
+
+### Pre-deployment Checklist
+
+Before deploying to production, run the production readiness check:
+
+```bash
+pnpm check-production
+```
+
+This will scan your codebase for:
+
+- Development-only code (console.log, TODO comments)
+- Missing environment variables
+- Improper error handling in API routes
+- Security vulnerabilities
+
+### Environment Variables for Production
+
+Ensure all required environment variables are set:
+
+```env
+# Database
+DATABASE_URL=your_production_database_url
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# AI Services
+GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key
+
+# App Configuration
+NEXT_PUBLIC_APP_URL=https://your-production-domain.com
+```
+
+### Deployment Platforms
+
+#### Vercel (Recommended)
+
+1. Connect your GitHub repository to Vercel
+2. Set environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
+
+#### Docker Deployment
+
+```bash
+# Build production image
+docker build -t storyssprout .
+
+# Run with environment variables
+docker run -p 3000:3000 --env-file .env.production storyssprout
+```
+
+#### Manual Server Deployment
+
+```bash
+# Install dependencies
+npm ci --only=production
+
+# Build the application
+npm run build
+
+# Start production server
+npm start
+```
+
+### Post-deployment Verification
+
+- [ ] Test user registration and login
+- [ ] Verify story generation functionality
+- [ ] Check image generation capabilities
+- [ ] Test PDF download feature
+- [ ] Validate email notifications
+- [ ] Confirm database connections
+
+### Performance Optimization
+
+- Enable Next.js Image Optimization
+- Configure CDN for static assets
+- Set up database connection pooling
+- Implement proper caching strategies
+- Monitor API rate limits
+
+### Security Considerations
+
+- Enable HTTPS/SSL certificates
+- Configure proper CORS policies
+- Set up rate limiting for API endpoints
+- Implement proper input validation
+- Enable security headers in Next.js config
+
+## �🔮 Future Enhancements
+
+- [ ] Story templates and presets
+- [ ] Advanced story analytics
+- [ ] Collaborative story creation
+- [ ] Voice narration integration
+- [ ] Mobile app development
+- [ ] Multi-language support
+- [ ] Print-ready formatting
+- [ ] Story series and sequels
+- [ ] Community story sharing
+- [ ] Premium subscription features
+
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
+- **Supabase** for authentication and database infrastructure
 - **Google Generative AI** for powerful AI capabilities
 - **Vercel** for Next.js framework and deployment platform
-- **HeroUI** and **Shadcn UI** for beautiful, accessible components
+- **HeroUI** for beautiful, accessible components
 - **Tailwind CSS** for utility-first styling
 - **Lucide** for comprehensive icon library
-
-## 🆘 Support & Issues
-
-If you encounter any issues or have questions:
-
-1. Check the [Issues](https://github.com/Abdo12KM/children-storybook-generator/issues) page
-2. Create a new issue with detailed description
-3. Include environment details and error messages
-
-## 🔮 Future Enhancements
-
-- [ ] Improved image generation quality and consistency across all story pages
-- [ ] Advanced character customization
-- [ ] User authentication and profiles
-- [ ] Saved stories and user libraries
-- [ ] Story templates and presets
-- [ ] Story sharing and community features
-- [ ] Story series and sequels
-- [ ] Multi-language support
-- [ ] Interactive story elements
-- [ ] Voice narration for stories
-- [ ] Print-ready formatting options
 
 ---
 

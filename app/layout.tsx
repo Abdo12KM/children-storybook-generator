@@ -3,7 +3,9 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import { AuthLayout } from "@/components/AuthLayout";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { AuthErrorBoundary } from "@/components/AuthErrorBoundary";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -48,14 +50,15 @@ export default function RootLayout({
         </style>
       </head>
       <body>
-        <Providers>
-          <main>
-            <div className="absolute top-4 right-4">
-              <ThemeSwitcher />
-            </div>
-            {children}
-          </main>
-        </Providers>
+        <ErrorBoundary>
+          <Providers>
+            <AuthErrorBoundary>
+              <AuthLayout>
+                <main>{children}</main>
+              </AuthLayout>
+            </AuthErrorBoundary>
+          </Providers>
+        </ErrorBoundary>
       </body>
     </html>
   );

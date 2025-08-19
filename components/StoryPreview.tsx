@@ -90,9 +90,9 @@ export function StoryPreview({ story, childName }: StoryPreviewProps) {
                 loading="lazy"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-muted">
-                <div className="text-center text-muted-foreground">
-                  <ImageIcon className="mx-auto h-12 w-12 mb-2" />
+              <div className="bg-muted flex h-full w-full items-center justify-center">
+                <div className="text-muted-foreground text-center">
+                  <ImageIcon className="mx-auto mb-2 h-12 w-12" />
                   <p className="text-sm">Image not available</p>
                 </div>
               </div>
