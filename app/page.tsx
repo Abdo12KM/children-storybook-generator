@@ -92,15 +92,6 @@ export default function LandingPage() {
                 Start Creating Stories
               </Button>
             </Link>
-            <Link href="/demo">
-              <Button
-                size="lg"
-                variant="bordered"
-                className="px-8 py-3 text-lg"
-              >
-                View Demo
-              </Button>
-            </Link>
           </div>
         </motion.div>
       </section>
@@ -151,13 +142,13 @@ export default function LandingPage() {
                     Ages 4-6
                   </span>
                   <span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-sm">
-                    Watercolor Style
+                    Realistic Style
                   </span>
                 </div>
               </div>
               <div className="relative">
                 <img
-                  src="/demo.png"
+                  src="/demo.jpg"
                   alt="Demo storybook page"
                   className="w-full rounded-lg shadow-lg"
                 />

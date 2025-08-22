@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
         profile = await UserService.createUser({
           id: user.id,
           email: user.email!,
-          fullName: user.user_metadata?.full_name || user.email!.split('@')[0],
+          fullName: user.user_metadata?.full_name || user.email!.split("@")[0],
           avatarUrl: user.user_metadata?.avatar_url || null,
         });
         // Preferences are created automatically in createUser
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
         profile = {
           id: user.id,
           email: user.email!,
-          fullName: user.user_metadata?.full_name || user.email!.split('@')[0],
+          fullName: user.user_metadata?.full_name || user.email!.split("@")[0],
           avatarUrl: user.user_metadata?.avatar_url || null,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
       email: profile.email,
       avatar_url: profile.avatarUrl,
       bio: null, // This field doesn't exist in the schema yet
-      location: null, // This field doesn't exist in the schema yet  
+      location: null, // This field doesn't exist in the schema yet
       website: null, // This field doesn't exist in the schema yet
       created_at: profile.createdAt.toISOString(),
       story_count: 0, // TODO: Calculate actual count
@@ -98,9 +98,9 @@ export async function GET(request: NextRequest) {
       dark_mode: preferences.theme || "system",
     };
 
-    return NextResponse.json({ 
-      profile: transformedProfile, 
-      preferences: transformedPreferences 
+    return NextResponse.json({
+      profile: transformedProfile,
+      preferences: transformedPreferences,
     });
   } catch (error) {
     console.error("Error fetching user profile:", error);

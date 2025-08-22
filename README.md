@@ -4,7 +4,7 @@ An AI-powered web application that creates personalized children's storybooks wi
 
 > **⚠️ PROJECT STATUS: WORK IN PROGRESS**
 >
-> This project is currently **incomplete** and under active development. There are known bugs, missing features, and areas for improvement.
+> This project is currently **incomplete** and under active development. There are many known bugs, missing features, and areas for improvement.
 
 ## 🌟 Features
 
@@ -26,7 +26,7 @@ An AI-powered web application that creates personalized children's storybooks wi
 
 ### 🎨 Visual Customization
 
-- **AI-Generated Illustrations**: Automatic image generation using Google's Gemini 2.0 Flash Preview
+- **AI-Generated Illustrations**: Automatic image generation using Google's Gemini 2.0 Flash Preview in development, Imagen 4 in production
 - **Multiple Art Styles**: Choose from watercolor, cartoon, realistic, digital art, and more
 - **Character Consistency**: Maintains consistent character appearance throughout the story
 - **Image Upload Support**: Upload inspiration images to influence the story theme and visuals
@@ -130,7 +130,7 @@ An AI-powered web application that creates personalized children's storybooks wi
 ### AI Integration
 
 - **Story Generation**: Google Gemini 2.5 Pro for text
-- **Image Generation**: Google Gemini 2.0 Flash Preview for illustrations
+- **Image Generation**: Google Gemini 2.0 Flash Preview for illustrations in development / Imagen 4 for production
 - **PDF Generation**: jsPDF for story export
 
 ### Development Tools
