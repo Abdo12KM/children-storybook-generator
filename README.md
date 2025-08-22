@@ -2,6 +2,10 @@
 
 An AI-powered web application that creates personalized children's storybooks with custom illustrations. Built with Next.js 15, React 19, Supabase, and Google's Gemini AI.
 
+> **⚠️ PROJECT STATUS: WORK IN PROGRESS**
+>
+> This project is currently **incomplete** and under active development. There are known bugs, missing features, and areas for improvement.
+
 ## 🌟 Features
 
 ### � User Authentication & Management
@@ -12,7 +16,7 @@ An AI-powered web application that creates personalized children's storybooks wi
 - **Collections**: Organize stories into custom folders/collections
 - **Public Sharing**: Share stories with secure, shareable links
 
-### �📖 Story Generation
+### 📖 Story Generation
 
 - **Personalized Stories**: Create unique stories tailored to your child's name, age, and preferences
 - **AI-Powered Content**: Leverage Google's Gemini AI for high-quality story generation
