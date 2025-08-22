@@ -8,7 +8,7 @@ An AI-powered web application that creates personalized children's storybooks wi
 
 ## 🌟 Features
 
-### � User Authentication & Management
+### 🔒 User Authentication & Management
 
 - **Secure Authentication**: Email/password and social login (Google, GitHub) via Supabase Auth
 - **User Profiles**: Personalized user accounts with preferences and settings
@@ -140,27 +140,6 @@ An AI-powered web application that creates personalized children's storybooks wi
 - **Drizzle Kit**: Database migrations and management
 - **Tailwind CSS**: Utility-first styling
 
-## �️ Project Structure
-
-```
-├── app/                    # Next.js App Router pages
-│   ├── api/               # API routes
-│   ├── auth/              # Authentication pages
-│   ├── dashboard/         # User dashboard
-│   ├── landing/           # Landing page
-│   ├── login/             # Login page
-│   ├── signup/            # Registration page
-│   └── create/            # Story creation page
-├── components/            # Reusable UI components
-├── hooks/                 # Custom React hooks
-├── lib/                   # Utility libraries
-│   └── supabase/         # Supabase client configuration
-├── services/              # Business logic and API calls
-├── db/                    # Database schema and configuration
-├── types/                 # TypeScript type definitions
-└── constants/             # Application constants
-```
-
 ## 🔧 Database Schema
 
 The application uses a comprehensive PostgreSQL schema with the following main tables:
@@ -201,7 +180,7 @@ See `DATABASE.md` for detailed schema documentation.
 - **Session Management**: Secure session handling
 - **Protected Routes**: Middleware-based route protection
 
-## � API Documentation
+## 🔒 API Documentation
 
 ### Authentication Endpoints
 
@@ -258,7 +237,7 @@ See `DATABASE.md` for detailed schema documentation.
    - Verify Google AI API key
    - Check API quotas and limits
 
-## � Production Deployment
+## 🔮 Production Deployment
 
 ### Pre-deployment Checklist
 
@@ -348,7 +327,7 @@ npm start
 - Implement proper input validation
 - Enable security headers in Next.js config
 
-## �🔮 Future Enhancements
+## 🔮 Future Enhancements
 
 - [ ] Story templates and presets
 - [ ] Advanced story analytics
